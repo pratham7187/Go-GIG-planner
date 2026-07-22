@@ -11,6 +11,7 @@ here are intentionally simple and are documented as such — see [Trade-offs](#t
 
 ## Table of Contents
 - [Quick Start](#quick-start)
+- [Application Screenshots](#application-screenshots)
 - [Architecture](#architecture)
 - [Processing Flow](#processing-flow)
 - [Folder Structure](#folder-structure)
@@ -84,6 +85,35 @@ docker compose down
 
 The application is available at http://localhost:8000 and API documentation at
 http://localhost:8000/docs.
+
+## Application Screenshots
+
+### Upload a vehicle image
+
+![Upload page](docs/screenshots/upload-page.png)
+
+### Processing progress
+
+![Processing overlay](docs/screenshots/processing-overlay.png)
+
+### Approved image analysis
+
+![Approved analysis result](docs/screenshots/analysis-result-approved.png)
+
+### Review cases
+
+The pipeline highlights images needing review when plate text cannot be read
+confidently or when a GPS/timestamp overlay is detected.
+
+![Plate review result](docs/screenshots/analysis-result-plate-review.png)
+
+![Overlay review result](docs/screenshots/analysis-result-overlay-review.png)
+
+### Dashboard and history management
+
+![Dashboard statistics](docs/screenshots/dashboard-statistics.png)
+
+![History management](docs/screenshots/history-management.png)
 
 ---
 
