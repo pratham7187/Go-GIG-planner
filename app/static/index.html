@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vehicle image validation and analysis pipeline dashboard">
+  <title>Vehicle Pipeline</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><rect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%233b5bdb%22/><path d=%22M3 11l3-5 2.5 3.5 2-2.5L13 11%22 stroke=%22white%22 stroke-width=%221.2%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+  <link rel="stylesheet" href="/static/styles.css?v=history-delete-1">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div>
+        <h1>Vehicle Pipeline</h1>
+        <p>Image validation and analysis</p>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="upload">Upload</button>
+      <button class="tab" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="history">History</button>
+    </nav>
+
+    <!-- Upload Tab -->
+    <section id="tab-upload" class="tab-content active">
+      <!-- Upload Zone -->
+      <div class="upload-zone" id="upload-zone">
+        <div class="upload-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h3>Drop your vehicle image here</h3>
+        <p>or click to browse files</p>
+        <p class="upload-hint">JPG, PNG, WebP, BMP &middot; Max 10 MB</p>
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.bmp" hidden>
+      </div>
+
+      <!-- Image Preview -->
+      <div class="preview-container" id="preview-container" style="display:none">
+        <img id="preview-image" alt="Preview">
+        <div class="preview-info">
+          <span id="preview-name"></span>
+          <span id="preview-size"></span>
+          <button class="btn-remove" id="btn-remove">Remove</button>
+        </div>
+        <button class="btn-primary" id="btn-upload">Analyze Image</button>
+      </div>
+
+      <!-- Processing Overlay -->
+      <div class="processing-overlay" id="processing-overlay" style="display:none">
+        <div class="processing-content">
+          <div class="spinner"></div>
+          <h3>Analyzing image</h3>
+          <p id="processing-status">Uploading...</p>
+          <div class="processing-steps">
+            <div class="step" id="step-upload">Upload</div>
+            <div class="step" id="step-blur">Blur detection</div>
+            <div class="step" id="step-brightness">Brightness check</div>
+            <div class="step" id="step-ocr">OCR and plate detection</div>
+            <div class="step" id="step-duplicate">Duplicate check</div>
+            <div class="step" id="step-metadata">Metadata analysis</div>
+            <div class="step" id="step-screenshot">Screenshot detection</div>
+            <div class="step" id="step-complete">Complete</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="result-card" style="display:none">
+        <div class="result-header">
+          <h2>Analysis Results</h2>
+          <span class="status-badge" id="result-status"></span>
+        </div>
+
+        <div class="result-summary" id="result-summary"></div>
+
+        <div class="confidence-section">
+          <h3>Confidence Score</h3>
+          <div class="confidence-gauge" id="confidence-gauge">
+            <div class="confidence-fill" id="confidence-fill"></div>
+            <span class="confidence-value" id="confidence-value"></span>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <div class="metric-card full-width" id="result-image-card">
+            <div class="metric-label">Uploaded Image</div>
+            <img id="result-image" class="result-thumbnail" alt="Uploaded image">
+          </div>
+
+          <div class="metric-card" id="metric-blur">
+            <div class="metric-label">Blur Detection</div>
+            <div class="metric-value" id="val-blur"></div>
+            <div class="metric-detail" id="detail-blur"></div>
+          </div>
+
+          <div class="metric-card" id="metric-brightness">
+            <div class="metric-label">Brightness</div>
+            <div class="metric-value" id="val-brightness"></div>
+            <div class="metric-detail" id="detail-brightness"></div>
+          </div>
+
+          <div class="metric-card" id="metric-lowlight">
+            <div class="metric-label">Low Light</div>
+            <div class="metric-value" id="val-lowlight"></div>
+          </div>
+
+          <div class="metric-card" id="metric-duplicate">
+            <div class="metric-label">Duplicate Detection</div>
+            <div class="metric-value" id="val-duplicate"></div>
+            <div class="metric-detail" id="detail-duplicate"></div>
+          </div>
+
+          <div class="metric-card" id="metric-ocr">
+            <div class="metric-label">OCR Extracted Text</div>
+            <div class="metric-value" id="val-ocr"></div>
+          </div>
+
+          <div class="metric-card" id="metric-plate">
+            <div class="metric-label">Vehicle Number</div>
+            <div class="metric-value" id="val-plate"></div>
+            <div class="metric-detail" id="detail-plate"></div>
+          </div>
+
+          <div class="metric-card" id="metric-metadata">
+            <div class="metric-label">Image Metadata</div>
+            <div class="metric-detail" id="detail-metadata"></div>
+          </div>
+
+          <div class="metric-card" id="metric-screenshot">
+            <div class="metric-label">Screenshot Detection</div>
+            <div class="metric-value" id="val-screenshot"></div>
+          </div>
+
+          <div class="metric-card" id="metric-tamper">
+            <div class="metric-label">Tampering Detection</div>
+            <div class="metric-value" id="val-tamper"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px; text-align:center;">
+          <button class="btn-primary" id="btn-new-upload">Analyze Another Image</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Tab -->
+    <section id="tab-dashboard" class="tab-content" style="display:none">
+      <h2 class="section-title">Pipeline Statistics</h2>
+      <div class="dashboard-grid" id="dashboard-grid">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- History Tab -->
+    <section id="tab-history" class="tab-content" style="display:none">
+      <div class="history-header">
+        <h2 class="section-title">Recent Uploads</h2>
+        <button class="btn-clear-history" id="btn-clear-history" type="button">Clear All History</button>
+      </div>
+      <div class="history-list" id="history-list">
+        <!-- Populated by JS -->
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </div>
+
+  <!-- Error Toast -->
+  <div class="error-toast" id="error-toast" style="display:none">
+    <span class="toast-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+    </span>
+    <span class="toast-message" id="toast-message"></span>
+    <button class="toast-close" id="toast-close">&times;</button>
+  </div>
+
+  <script src="/static/app.js?v=history-delete-1"></script>
+</body>
+</html>

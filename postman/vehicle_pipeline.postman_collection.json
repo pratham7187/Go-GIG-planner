@@ -1,0 +1,81 @@
+{
+  "info": {
+    "name": "Vehicle Image Processing Pipeline",
+    "description": "Sample requests for the Intelligent Vehicle Image Processing Pipeline API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "image_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "name": "Upload Image",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.id) { pm.collectionVariables.set('image_id', body.id); }",
+              "pm.test('status is 202', () => pm.response.to.have.status(202));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/upload",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "file", "type": "file", "src": "" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Status",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/status/{{image_id}}"
+      }
+    },
+    {
+      "name": "Get Analysis Result",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/result/{{image_id}}"
+      }
+    },
+    {
+      "name": "List Images",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/images?limit=20&offset=0",
+          "host": ["{{base_url}}"],
+          "path": ["images"],
+          "query": [
+            { "key": "limit", "value": "20" },
+            { "key": "offset", "value": "0" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Dashboard Stats",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/stats"
+      }
+    }
+  ]
+}
