@@ -8,3 +8,10 @@ uploads/*
 server.log
 .venv/
 venv/
+.pytest_cache/
+.agents/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+_debug_overlay.py

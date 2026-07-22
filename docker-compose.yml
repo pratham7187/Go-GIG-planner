@@ -1,6 +1,7 @@
 services:
   api:
     build: .
+    image: gogig-vehicle-pipeline:latest
     ports:
       - "8000:8000"
     env_file:

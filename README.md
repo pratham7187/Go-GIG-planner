@@ -53,19 +53,37 @@ python scripts/seed.py --duplicate
 
 API docs (Swagger UI): http://localhost:8000/docs
 
-### Option B — Docker Compose
+## Docker Deployment
 
 ```bash
-cp .env.example .env
+# Build the image and start the application in the foreground.
 docker compose up --build
 ```
 
-> **Note on verification:** the Docker setup was written and reviewed carefully (correct base
-> image, tesseract + OpenCV system deps, volume mounts for `uploads/` and `data/`). The
-> `docker-compose.yml` uses `required: false` for the `.env` file, so `docker compose up --build`
-> works even without creating a `.env` file first (defaults from `.env.example` are baked into the
-> app's `Settings` class). Please verify `docker compose up --build` on your machine — the local
-> (Option A) path **was** fully tested, including the bug fixes below.
+To build and run without Compose:
+
+```bash
+docker build -t gogig-vehicle-pipeline .
+docker run --rm -p 8000:8000 \
+  -v "${PWD}/uploads:/app/uploads" \
+  -v "${PWD}/data:/app/data" \
+  gogig-vehicle-pipeline
+```
+
+On Windows PowerShell, replace `${PWD}` with `${PWD.Path}` in the volume
+arguments if Docker does not expand it automatically. The Compose configuration
+mounts `uploads/` and `data/`, preserving uploaded images and the SQLite
+database across container recreations. An optional `.env` file is loaded when
+present; its defaults are already supplied by the application.
+
+Stop the foreground Compose service with `Ctrl+C`, or run:
+
+```bash
+docker compose down
+```
+
+The application is available at http://localhost:8000 and API documentation at
+http://localhost:8000/docs.
 
 ---
 

@@ -1,5 +1,6 @@
-__pycache__/
-*.pyc
+.venv/
+**/__pycache__/
+*.py[cod]
 .env
 data/
 uploads/
@@ -7,3 +8,15 @@ uploads/
 server.log
 .git/
 tests/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+postman/
+_debug_overlay.py
+.agents/
+railway.toml
+README.md
+docker-compose.yml
+scripts/
